@@ -1,15 +1,18 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const basename = require('./package.json').name;
-
+const folder = './appscript';
 
 (async function () {
+  if (!fs.existsSync(folder))
+    fs.mkdirSync(folder, { recursive: true });
+
   let webapp = false;
   const claspCommand = await createClaspCommand(process.argv[2], (param, value) => {
     const actions = {
-      def: () => webapp = true && `clasp create --title "${basename}" --type webapp --rootDir ./appsscript`,
-      title: (value) => webapp = true && `clasp create --title "${value}" --type webapp --rootDir ./appsscript`,
-      clone: (scriptID) => `clasp clone ${scriptID} --rootDir ./appsscript`
+      def: () => webapp = true && `clasp create --title "${basename}" --type webapp --rootDir ${folder}`,
+      title: (value) => webapp = true && `clasp create --title "${value}" --type webapp --rootDir ${folder}`,
+      clone: (scriptID) => `clasp clone ${scriptID} --rootDir ${folder}`
     };
 
     if (param in actions)
@@ -20,12 +23,12 @@ const basename = require('./package.json').name;
   const result = await run(claspCommand);
   console.log(result);
 
-  await fs.rename('./appsscript/.clasp.json', './.clasp.json', err => {
+  await fs.rename(folder + '/.clasp.json', './.clasp.json', err => {
     if (err) throw err;
   });
 
   if (webapp)
-    fs.readFile('./appsscript/appsscript.json', (err, data) => {
+    fs.readFile(folder + '/appsscript.json', (err, data) => {
       if (err) throw err;
 
       const config = JSON.parse(data);
@@ -36,7 +39,7 @@ const basename = require('./package.json').name;
         }
       });
 
-      fs.writeFile('./appsscript/appsscript.json', JSON.stringify(config, null, '  '), err => {
+      fs.writeFile(folder + '/appsscript.json', JSON.stringify(config, null, '  '), err => {
         if (err) throw err;
       });
     });
