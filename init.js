@@ -1,7 +1,7 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const basename = require('./package.json').name;
-const folder = './appscript';
+const folder = './appsscript';
 
 (async function () {
   if (!fs.existsSync(folder))
