@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node util.js test",
-    "init-clasp": "git remote remove origin && node init.js",
+    "clear git": "git remote remove origin",
+    "init-clasp": "node init.js",
     "deploy": "node util.js deploy"
   },
   "keywords": [],
